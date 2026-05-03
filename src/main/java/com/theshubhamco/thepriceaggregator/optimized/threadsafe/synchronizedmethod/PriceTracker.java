@@ -1,4 +1,4 @@
-package com.theshubhamco.thepriceaggregator.optimized;
+package com.theshubhamco.thepriceaggregator.optimized.threadsafe.synchronizedmethod;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -16,7 +16,7 @@ public class PriceTracker {
         this.prefixPriceSums.add(BigDecimal.ZERO);
     }
 
-    public void addPrice(double price) {
+    public synchronized void addPrice(double price) {
         if (price < 0) {
             throw new IllegalArgumentException("price must be greater than or equal to 0");
         }
@@ -27,7 +27,7 @@ public class PriceTracker {
                 .add(BigDecimal.valueOf(price)));
     }
 
-    public double getMovingAverage(int k) {
+    public synchronized double getMovingAverage(int k) {
         if (k <= 0) {
             throw new IllegalArgumentException("k must be greater than 0");
         }

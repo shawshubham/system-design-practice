@@ -1,4 +1,4 @@
-package com.theshubhamco.thepriceaggregator.optimized;
+package com.theshubhamco.thepriceaggregator.optimized.threadsafe.concurrencyproblem;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -25,6 +25,8 @@ public class PriceTracker {
         prefixPriceSums.add(prefixPriceSums
                 .get(prefixPriceSums.size() - 1)
                 .add(BigDecimal.valueOf(price)));
+
+        System.out.println(prefixPriceSums);
     }
 
     public double getMovingAverage(int k) {

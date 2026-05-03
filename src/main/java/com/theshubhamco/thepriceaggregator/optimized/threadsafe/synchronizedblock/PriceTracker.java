@@ -1,4 +1,4 @@
-package com.theshubhamco.thepriceaggregator.optimized;
+package com.theshubhamco.thepriceaggregator.optimized.threadsafe.synchronizedblock;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -21,10 +21,15 @@ public class PriceTracker {
             throw new IllegalArgumentException("price must be greater than or equal to 0");
         }
 
-        prices.add(price);
-        prefixPriceSums.add(prefixPriceSums
-                .get(prefixPriceSums.size() - 1)
-                .add(BigDecimal.valueOf(price)));
+        synchronized (this) {
+            prices.add(price);
+
+            BigDecimal latestPrefixSum = prefixPriceSums
+                    .get(prefixPriceSums.size() - 1)
+                    .add(BigDecimal.valueOf(price));
+
+            prefixPriceSums.add(latestPrefixSum);
+        }
     }
 
     public double getMovingAverage(int k) {
@@ -32,12 +37,14 @@ public class PriceTracker {
             throw new IllegalArgumentException("k must be greater than 0");
         }
 
-        if (prices.isEmpty()) {
-            throw new IllegalStateException("No prices available");
-        }
+        synchronized (this) {
+            if (prices.isEmpty()) {
+                throw new IllegalStateException("No prices available");
+            }
 
-        int count = Math.min(k, prices.size());
-        return calculateMovingAverage(count);
+            int count = Math.min(k, prices.size());
+            return calculateMovingAverage(count);
+        }
     }
 
     private double calculateMovingAverage(int count) {
